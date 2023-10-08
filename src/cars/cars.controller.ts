@@ -13,6 +13,7 @@ import {
 } from '@nestjs/common';
 import { CarsService } from './cars.service';
 import { CreateCarDto } from './dto/create-car.dto';
+import { UpdateCarDto } from './dto/update-car.dto';
 
 @Controller('cars')
 @UsePipes(ValidationPipe)
@@ -22,6 +23,7 @@ export class CarsController {
   getAllCars() {
     return this.carsService.findAll();
   }
+
   @Get(':id')
   getCarByIi(@Param('id', ParseUUIDPipe) id: string) {
     console.log({ id });
@@ -31,19 +33,19 @@ export class CarsController {
 
   @Post()
   createCar(@Body() createCardDto: CreateCarDto) {
-    return createCardDto;
+    this.carsService.createCar(createCardDto);
   }
 
   @Patch(':id')
-  updateCar(@Body() body: any) {
-    return body;
+  updateCar(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateCarDto: UpdateCarDto,
+  ) {
+    return this.carsService.updateCar(id, updateCarDto);
   }
 
   @Delete(':id')
-  deleteCar(@Param('id', ParseIntPipe) id: number) {
-    return {
-      method: 'delete',
-      id,
-    };
+  deleteCar(@Param('id', ParseUUIDPipe) id: string) {
+    return this.carsService.deleteCar(id);
   }
 }
